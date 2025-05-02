@@ -279,6 +279,7 @@ class HTMLParser:
         paragraphs = article_soup.find_all('p', class_ = lambda class_name: (
                 class_name and (
             class_name.startswith('absolute left-0 top-0 w-full h-full object-cover')
+
         )))
 
     def _fill_article_with_meta_information(self, article_soup: BeautifulSoup) -> None:
