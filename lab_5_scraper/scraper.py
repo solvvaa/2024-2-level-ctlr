@@ -3,6 +3,7 @@ Crawler implementation.
 """
 import datetime
 import _json
+import json
 
 # pylint: disable=too-many-arguments, too-many-instance-attributes, unused-import, undefined-variable, unused-argument
 import pathlib
@@ -182,7 +183,7 @@ class Crawler:
     import config
     self.config = config
     self.urls = []
-    def prepare_environment(ASSETS_PATH)
+    def prepare_environment(ASSETS_PATH):
         pass
 
     #: Url pattern
@@ -231,7 +232,7 @@ class Crawler:
                     url = self._extract_url(soup)
                     if url == 'stop iteration' or url in self.urls:
                         break
-                self.urls.append(url)
+                    self.urls.append(url)
                     if len(self.urls) >= self.config.get_num_articles():
                         return
 
