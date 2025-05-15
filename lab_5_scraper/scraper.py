@@ -28,6 +28,7 @@ class Config:
     Class for unpacking and validating configurations.
     """
 
+
     def __init__(self, path_to_config: pathlib.Path) -> None:
         """
         Initialize an instance of the Config class.
