@@ -117,7 +117,7 @@ class Config:
         if not isinstance(self._encoding, str):
             raise IncorrectEncodingError('Encoding is not specified as a string')
         if (not isinstance(self._timeout, int)
-                or not 0 < self._timeout < 60):
+                or not 0 < self._timeout<60):
             raise IncorrectTimeoutError('Timeout value is not a positive integer less than 60')
         if not isinstance(self._should_verify_certificate, bool):
             raise IncorrectVerifyError('Verify certificate value is npt either True or False')
