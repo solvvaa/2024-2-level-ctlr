@@ -2,17 +2,17 @@
 Crawler implementation.
 """
 import datetime
-import _json
 import json
+#import json
 
 # pylint: disable=too-many-arguments, too-many-instance-attributes, unused-import, undefined-variable, unused-argument
 import pathlib
 from asyncio import timeout
 from typing import Pattern, Union
 
-import pathlib
+#import pathlib
 import shutil
-from typing import Pattern, Union
+#from typing import Pattern, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -56,39 +56,30 @@ class Config:
         """
         with open(self.path_to_config, encoding='utf-8') as file:
             config_dto = json.load(file)
-            return
-        ConfigDTO(**config_dto)
+            return ConfigDTO(**config_dto)
 
     def _validate_config_content(self) -> None:
         """
         Ensure configuration parameters are not corrupt.
         """
         if (not isinstance(self._seed_urls, list) or not all(isinstance(url, str) for url in self._seed_urls)):
-            raise
-            IncorrectSeedURLError('_seed_urls must be a list')
-        if not all(url.startswith(https://sakh.online) for url in self._seed_urls):
-            raise
-        IncorrectSeedURLError('Seed URL does not match standard pattern')
+            raise IncorrectSeedURLError('_seed_urls must be a list')
+        if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
+            raise IncorrectSeedURLError('Seed URL does not match standard pattern')
         if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool) or self._num_articles < 0):
-            raise
-        IncorrectNumberOfArticlesError('Invalid number pf articles: '
+            raise IncorrectNumberOfArticlesError('Invalid number pf articles: '
                                        'must be an integer and not 0')
         if self._num_articles > 150:
-            raise
-        NumberOfArticlesOutOfRangeError('Number of articles out of range: '
+            raise NumberOfArticlesOutOfRangeError('Number of articles out of range: '
                                         'should be between 1 and 150')
         if not isinstance(self._encoding, str):
-            raise
-        IncorrectEncodingError('Encoding is not specified as a string')
+            raise IncorrectEncodingError('Encoding is not specified as a string')
         if not isinstance(self._timeout, int) or not 0 < self._timeout < 60:
-            raise
-        IncorrectTimeoutError('Timeout value is not a positive integer less than 60')
+            raise IncorrectTimeoutError('Timeout value is not a positive integer less than 60')
         if not isinstance(self._should_verify_certificate, bool):
-            raise
-        IncorrectVerifyError('Verify certificate value is npt either True or False')
+            raise IncorrectVerifyError('Verify certificate value is npt either True or False')
         if not isinstance(self._headless_mode, bool):
-            raise
-        IncorrectVerifyError('headless_mode should be an instance of bool')
+            raise IncorrectVerifyError('headless_mode should be an instance of bool')
 
 
     def get_seed_urls(self) -> list[str]:
