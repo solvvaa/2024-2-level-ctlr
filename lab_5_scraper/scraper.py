@@ -176,8 +176,6 @@ class Crawler:
     import config
     self.config = config
     self.urls = []
-    def prepare_environment(ASSETS_PATH):
-        pass
 
     #: Url pattern
     url_pattern: Union[Pattern, str]
