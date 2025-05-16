@@ -176,8 +176,6 @@ class Crawler:
     """
     Crawler implementation.
     """
-    from self import self
-    import config
     self.config = config
     self.urls = []
 
