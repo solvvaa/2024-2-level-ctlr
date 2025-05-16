@@ -365,7 +365,6 @@ def main() -> None:
         if isinstance(article, Article):
             to_raw(article)
 
-
 if __name__ == "__main__":
     main()
 
