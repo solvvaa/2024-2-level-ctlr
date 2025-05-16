@@ -12,7 +12,6 @@ from typing import Pattern, Union
 
 #import pathlib
 import shutil
-#from typing import Pattern, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,6 +20,48 @@ from core_utils.article.article import Article
 from core_utils.article.io import to_meta, to_raw
 from core_utils.config_dto import ConfigDTO
 from core_utils.constants import ASSETS_PATH, CRAWLER_CONFIG_PATH
+
+
+class IncorrectSeedURLError(Exception):
+    """
+    Raises when seed URL does not match standard pattern
+    """
+
+
+class NumberOfArticlesOutOfRangeError(Exception):
+    """
+        Raises when total number of articles is out of range from 1 to 150
+        """
+
+
+class IncorrectNumberOfArticlesError(Exception):
+    """
+        Raises when total number of articles to parse is not integer or less than 0
+        """
+
+
+class IncorrectHeadersError(Exception):
+    """
+        Raises when headers are not in a form of dictionary
+        """
+
+
+class IncorrectEncodingError(Exception):
+    """
+        Raises when encoding is not specified as a string
+        """
+
+
+class IncorrectTimeoutError(Exception):
+    """
+        Raises when timeout value is not a positive integer less than 60
+        """
+
+
+class IncorrectVerifyError(Exception):
+    """
+        Raises when verify certificate value is not either True or False
+        """
 
 
 class Config:
@@ -174,8 +215,6 @@ class Crawler:
     """
     Crawler implementation.
     """
-    self.config = config
-    self.urls = []
 
     #: Url pattern
     url_pattern: Union[Pattern, str]
@@ -187,6 +226,8 @@ class Crawler:
         Args:
             config (Config): Configuration
         """
+        self.config = config
+        self.urls = []
 
     def _extract_url(self, article_bs: BeautifulSoup) -> str:
         """
@@ -314,6 +355,15 @@ def main() -> None:
     """
     Entrypoint for scrapper module.
     """
+    configuration = Config(path_to_config=CRAWLER_CONFIG_PATH)
+    prepare_environment(ASSETS_PATH)
+    crawler = Crawler(config=configuration)
+    crawler.find_articles()
+    for i, full_url in enumerate(crawler.urls):
+        parser = HTMLParser(full_url=full_url, article_id=i + 1, config=configuration)
+        article = parser.parse()
+        if isinstance(article, Article):
+            to_raw(article)
 
 
 if __name__ == "__main__":
