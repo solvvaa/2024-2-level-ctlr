@@ -17,8 +17,8 @@ import shutil
 import requests
 from bs4 import BeautifulSoup
 
-from core_unils.article.article import Article
-from core_unils.article.io import to_meta, to_raw
+from core_utils.article.article import Article
+from core_utils.article.io import to_meta, to_raw
 from core_utils.config_dto import ConfigDTO
 from core_utils.constants import ASSETS_PATH, CRAWLER_CONFIG_PATH
 
@@ -39,6 +39,7 @@ class Config:
         """
         self.path_to_config = path_to_config
         config = self._extract_config_content()
+        self._seed_urls = config.seed_urls
         self._num_articles = config.total_articles
         self._headers = config.headers
         self._encoding = config.encoding
@@ -62,11 +63,13 @@ class Config:
         """
         Ensure configuration parameters are not corrupt.
         """
-        if (not isinstance(self._seed_urls, list) or not all(isinstance(url, str) for url in self._seed_urls)):
+        if (not isinstance(self._seed_urls, list)
+                or not all(isinstance(url, str) for url in self._seed_urls)):
             raise IncorrectSeedURLError('_seed_urls must be a list')
         if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
             raise IncorrectSeedURLError('Seed URL does not match standard pattern')
-        if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool) or self._num_articles < 0):
+        if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool)
+                or self._num_articles < 0):
             raise IncorrectNumberOfArticlesError('Invalid number pf articles: '
                                        'must be an integer and not 0')
         if self._num_articles > 150:
@@ -74,7 +77,8 @@ class Config:
                                         'should be between 1 and 150')
         if not isinstance(self._encoding, str):
             raise IncorrectEncodingError('Encoding is not specified as a string')
-        if not isinstance(self._timeout, int) or not 0 < self._timeout < 60:
+        if (not isinstance(self._timeout, int)
+                or not 0 < self._timeout < 60):
             raise IncorrectTimeoutError('Timeout value is not a positive integer less than 60')
         if not isinstance(self._should_verify_certificate, bool):
             raise IncorrectVerifyError('Verify certificate value is npt either True or False')
