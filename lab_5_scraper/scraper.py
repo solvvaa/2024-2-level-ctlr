@@ -116,13 +116,19 @@ class Config:
                                         'should be between 1 and 150')
         if not isinstance(self._encoding, str):
             raise IncorrectEncodingError('Encoding is not specified as a string')
+
         if (not isinstance(self._timeout, int)
                 or not 0 < self._timeout<60):
             raise IncorrectTimeoutError('Timeout value is not a positive integer less than 60')
+
         if not isinstance(self._should_verify_certificate, bool):
             raise IncorrectVerifyError('Verify certificate value is npt either True or False')
+
         if not isinstance(self._headless_mode, bool):
             raise IncorrectVerifyError('headless_mode should be an instance of bool')
+
+        if not isinstance(self._headers, dict):
+            raise IncorrectHeadersError('Headers are not in a form of dictionary')
 
 
     def get_seed_urls(self) -> list[str]:
@@ -266,8 +272,9 @@ class Crawler:
                     url = self._extract_url(soup)
                     if url == 'stop iteration' or url in self.urls:
                         break
-                    self.urls.append(url)
-                    if len(self.urls) >= self.config.get_num_articles():
+                    if url:
+                        self.urls.append(url)
+                    if not url or len(self.urls) >= self.config.get_num_articles():
                         return
 
     def get_search_urls(self) -> list:
@@ -311,10 +318,9 @@ class HTMLParser:
         Args:
             article_soup (bs4.BeautifulSoup): BeautifulSoup instance
         """
-        paragraphs = article_soup.find_all('p', class_ = lambda class_name: (
-                class_name and (
-            class_name.startswith('absolute left-0 top-0 w-full h-full object-cover')
-        )))
+        paragraphs = article_soup.find_all('p', class_=lambda class_name: True)
+        article_text = "\n\n".join(p.get_text(strip=True) for p in paragraphs)
+        self.article.text = article_text
 
     def _fill_article_with_meta_information(self, article_soup: BeautifulSoup) -> None:
         """
@@ -323,6 +329,13 @@ class HTMLParser:
         Args:
             article_soup (bs4.BeautifulSoup): BeautifulSoup instance
         """
+        article_title = article_soup.find('h1', class_=lambda class_name: True)
+        self.article.title = article_title.get_text(strip=True)
+        author = article_soup.find_all('span', class_=lambda class_name: class_name and class_name.startswith('mr-2'))
+        if author and len(author) > 0:
+            self.article.author = [author[-1].get_text(strip=True)]
+        else:
+            self.article.author = ["Unknown"]
 
     def unify_date_format(self, date_str: str) -> datetime.datetime:
         """
@@ -342,6 +355,14 @@ class HTMLParser:
         Returns:
             Union[Article, bool, list]: Article instance
         """
+        response = make_request(self.full_url, self.config)
+        if not response.ok:
+            return self.article
+
+        article_bs = BeautifulSoup(response.text, 'lxml')
+        self._fill_article_with_text(article_bs)
+        self._fill_article_with_meta_information(article_bs)
+        return self.article
 
 
 def prepare_environment(base_path: Union[pathlib.Path, str]) -> None:
