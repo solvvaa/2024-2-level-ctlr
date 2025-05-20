@@ -279,8 +279,10 @@ class Crawler:
                         break
                     if url:
                         self.urls.append(url)
-                    if not url or len(self.urls) >= self.config.get_num_articles():
+                    if len(self.urls) >= self.config.get_num_articles():
                         return
+                    if not url:
+                        break
 
     def get_search_urls(self) -> list:
         """
