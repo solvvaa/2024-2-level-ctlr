@@ -3,14 +3,15 @@ Crawler implementation.
 """
 import datetime
 import json
+#import json
 
 # pylint: disable=too-many-arguments, too-many-instance-attributes, unused-import, undefined-variable, unused-argument
 import pathlib
+from asyncio import timeout
+from typing import Pattern, Union
 
 #import pathlib
 import shutil
-from asyncio import timeout
-from typing import Pattern, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,12 +20,6 @@ from core_utils.article.article import Article
 from core_utils.article.io import to_meta, to_raw
 from core_utils.config_dto import ConfigDTO
 from core_utils.constants import ASSETS_PATH, CRAWLER_CONFIG_PATH
-
-#import json
-
-
-
-
 
 
 class IncorrectSeedURLError(Exception):
@@ -260,7 +255,7 @@ class Crawler:
                 link.decompose()
                 if isinstance(full_url, str):
                     return full_url
-                return 'stop iteration'
+        return 'stop iteration'
 
 
     def find_articles(self) -> None:
@@ -277,12 +272,9 @@ class Crawler:
                     url = self._extract_url(soup)
                     if url == 'stop iteration' or url in self.urls:
                         break
-                    if url:
-                        self.urls.append(url)
+                    self.urls.append(url)
                     if len(self.urls) >= self.config.get_num_articles():
                         return
-                    if not url:
-                        break
 
     def get_search_urls(self) -> list:
         """
@@ -397,4 +389,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
