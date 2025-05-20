@@ -241,6 +241,8 @@ class Crawler:
         """
         all_links = article_bs.find_all('a', href=True)
         for link in all_links:
+            if link is None:
+                return ""
             href = str(link['href'])
             if href.startswith('/news/'):
                 full_url = 'https://sakh.online' + href
