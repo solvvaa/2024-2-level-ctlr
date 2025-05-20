@@ -391,6 +391,7 @@ def main() -> None:
         article = parser.parse()
         if isinstance(article, Article):
             to_raw(article)
+            to_meta(article)
 
 if __name__ == "__main__":
     main()
