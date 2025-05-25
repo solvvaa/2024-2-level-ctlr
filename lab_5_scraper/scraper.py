@@ -110,7 +110,7 @@ class Config:
         if (not isinstance(self._seed_urls, list)
                 or not all(isinstance(url, str) for url in self._seed_urls)):
             raise IncorrectSeedURLError('_seed_urls must be a list')
-        if not all(url.startswith('https://www.') for url in self._seed_urls):
+        if not all(url.startswith('http://www.') for url in self._seed_urls):
            raise IncorrectSeedURLError('Seed URL does not match standard pattern')
         if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool)
                 or self._num_articles < 0):
@@ -255,11 +255,11 @@ class Crawler:
             if link is None:
                 return ""
             href = str(link['href'])
-            #if href.startswith('/news/'):
-            #    full_url = 'https://sakh.online' + href
-            #    link.decompose()
-            #    if isinstance(full_url, str):
-            #        return full_url
+            if href.startswith('/news'):
+                full_url = 'http://www.novkamen.ru' + href
+                link.decompose()
+                if isinstance(full_url, str):
+                    return full_url
         return 'stop iteration'
 
 
@@ -268,12 +268,10 @@ class Crawler:
         Find articles.
         """
         for seed_url in self.get_search_urls():
-            self.urls.append(seed_url)
-            '''if len(self.urls) >= self.config.get_num_articles():
+            if len(self.urls) >= self.config.get_num_articles():
                 break
             response = make_request(seed_url, self.config)
             if response and response.status_code == 200:
-                self.urls.append(url)
                 soup = BeautifulSoup(response.text, 'lxml')
                 while True:
                     url = self._extract_url(soup)
@@ -281,7 +279,7 @@ class Crawler:
                         break
                     self.urls.append(url)
                     if len(self.urls) >= self.config.get_num_articles():
-                        return'''
+                        return
 
     def get_search_urls(self) -> list:
         """
