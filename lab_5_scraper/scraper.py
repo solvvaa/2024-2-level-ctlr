@@ -271,7 +271,7 @@ class Crawler:
             if len(self.urls) >= self.config.get_num_articles():
                 break
             response = make_request(seed_url, self.config)
-            if response and response.ok:
+            if response and response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'lxml')
                 while True:
                     url = self._extract_url(soup)
