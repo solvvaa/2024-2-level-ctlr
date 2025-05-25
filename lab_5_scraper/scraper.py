@@ -272,14 +272,15 @@ class Crawler:
                 break
             response = make_request(seed_url, self.config)
             if response and response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'lxml')
+                self.urls.append(url)
+                '''soup = BeautifulSoup(response.text, 'lxml')
                 while True:
                     url = self._extract_url(soup)
                     if url == 'stop iteration' or url in self.urls:
                         break
                     self.urls.append(url)
                     if len(self.urls) >= self.config.get_num_articles():
-                        return
+                        return'''
 
     def get_search_urls(self) -> list:
         """
