@@ -110,8 +110,8 @@ class Config:
         if (not isinstance(self._seed_urls, list)
                 or not all(isinstance(url, str) for url in self._seed_urls)):
             raise IncorrectSeedURLError('_seed_urls must be a list')
-        if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
-            raise IncorrectSeedURLError('Seed URL does not match standard pattern')
+        #if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
+        #   raise IncorrectSeedURLError('Seed URL does not match standard pattern')
         if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool)
                 or self._num_articles < 0):
             raise IncorrectNumberOfArticlesError('Invalid number pf articles: '
@@ -255,11 +255,11 @@ class Crawler:
             if link is None:
                 return ""
             href = str(link['href'])
-            if href.startswith('/news/'):
-                full_url = 'https://sakh.online' + href
-                link.decompose()
-                if isinstance(full_url, str):
-                    return full_url
+            #if href.startswith('/news/'):
+            #    full_url = 'https://sakh.online' + href
+            #    link.decompose()
+            #    if isinstance(full_url, str):
+            #        return full_url
         return 'stop iteration'
 
 
