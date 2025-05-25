@@ -110,8 +110,8 @@ class Config:
         if (not isinstance(self._seed_urls, list)
                 or not all(isinstance(url, str) for url in self._seed_urls)):
             raise IncorrectSeedURLError('_seed_urls must be a list')
-        #if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
-        #   raise IncorrectSeedURLError('Seed URL does not match standard pattern')
+        if not all(url.startswith('https://www.') for url in self._seed_urls):
+           raise IncorrectSeedURLError('Seed URL does not match standard pattern')
         if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool)
                 or self._num_articles < 0):
             raise IncorrectNumberOfArticlesError('Invalid number pf articles: '
