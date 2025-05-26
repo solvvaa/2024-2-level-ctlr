@@ -395,6 +395,5 @@ def main() -> None:
     Entrypoint for pipeline module.
     """
 
-
 if __name__ == "__main__":
     main()
