@@ -110,8 +110,8 @@ class Config:
         if (not isinstance(self._seed_urls, list)
                 or not all(isinstance(url, str) for url in self._seed_urls)):
             raise IncorrectSeedURLError('_seed_urls must be a list')
-        if not all(url.startswith('https://sakh.online') for url in self._seed_urls):
-            raise IncorrectSeedURLError('Seed URL does not match standard pattern')
+        if not all(url.startswith('http://www.') for url in self._seed_urls):
+           raise IncorrectSeedURLError('Seed URL does not match standard pattern')
         if (not isinstance(self._num_articles, int) or isinstance(self._num_articles, bool)
                 or self._num_articles < 0):
             raise IncorrectNumberOfArticlesError('Invalid number pf articles: '
@@ -255,8 +255,8 @@ class Crawler:
             if link is None:
                 return ""
             href = str(link['href'])
-            if href.startswith('/news/'):
-                full_url = 'https://sakh.online' + href
+            if href.startswith('/news'):
+                full_url = 'http://www.novkamen.ru' + href
                 link.decompose()
                 if isinstance(full_url, str):
                     return full_url
@@ -271,7 +271,7 @@ class Crawler:
             if len(self.urls) >= self.config.get_num_articles():
                 break
             response = make_request(seed_url, self.config)
-            if response and response.ok:
+            if response and response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'lxml')
                 while True:
                     url = self._extract_url(soup)
@@ -376,7 +376,10 @@ def prepare_environment(base_path: Union[pathlib.Path, str]) -> None:
     Args:
         base_path (Union[pathlib.Path, str]): Path where articles stores
     """
-
+    base_path = pathlib.Path(base_path)
+    if base_path.exists():
+        shutil.rmtree(base_path)
+    base_path.mkdir(parents=True, exist_ok=True)
 
 def main() -> None:
     """
