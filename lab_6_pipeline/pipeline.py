@@ -22,7 +22,6 @@ from core_utils.pipeline import (
     UnifiedCoNLLUDocument,
 )
 
-
 class EmptyDirectoryError(Exception):
     """
     Dataset directory is empty
