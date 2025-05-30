@@ -99,15 +99,17 @@ class CorpusManager:
         Register each dataset entry.
         """
         for filepath in self.path.glob('*_raw.txt'):
-            filename = filepath.name
+            article_from_raw = from_raw(filepath)
+            self._storage[article_from_raw.article_id] = article_from_raw
+            #filename = filepath.name
 
-            if filename.endswith('_raw.txt'):
+            '''if filename.endswith('_raw.txt'):
                 prefix = filename[:-8]
 
                 if prefix.isdigit():
                     article_id = int(prefix)
                     article = from_raw(filepath)
-                    self._storage[article_id] = article
+                    self._storage[article_id] = article'''
 
     def get_articles(self) -> dict:
         """
@@ -221,10 +223,10 @@ class UDPipeAnalyzer(LibraryWrapper):
         Returns:
             UDPipeDocument: Document ready for parsing
         """
-        corpus_manager = CorpusManager(path_to_raw_txt_data=ASSETS_PATH)
+        '''corpus_manager = CorpusManager(path_to_raw_txt_data=ASSETS_PATH)
         udpipe_analyzer = UDPipeAnalyzer()
         pipeline = TextProcessingPipeline(corpus_manager, udpipe_analyzer)
-        pipeline.run()
+        pipeline.run()'''
 
     def get_document(self, doc: UDPipeDocument) -> UnifiedCoNLLUDocument:
         """
@@ -394,6 +396,10 @@ def main() -> None:
     """
     Entrypoint for pipeline module.
     """
+    corpus_manager = CorpusManager(path_to_raw_txt_data=ASSETS_PATH)
+    udpipe_analyzer = UDPipeAnalyzer()
+    pipeline = TextProcessingPipeline(corpus_manager, udpipe_analyzer)
+    pipeline.run()
 
 if __name__ == "__main__":
     main()
